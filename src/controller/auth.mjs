@@ -1,8 +1,8 @@
 import authService from "../service/auth.mjs";
 
-const getNonce = (req, res) => {
+const getNonce = async (req, res) => {
   const { address } = req.body;
-  const nonce = authService.getNonce(address);
+  const nonce = await authService.getNonce(address);
   res.send(nonce);
 };
 

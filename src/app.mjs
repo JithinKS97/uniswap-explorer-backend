@@ -1,7 +1,7 @@
 import express from "express";
 import { initialiseRoutes } from "./routes/index.mjs";
 import cors from "cors";
-import bodyParser from "body-parser";
+import connect from "./service/db.mjs";
 
 const port = 8000;
 
@@ -11,12 +11,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.listen(port, () => {
-  console.log(`Uniswap explorer backend listening on port ${port}`);
-});
-
-function initialise() {
+async function initialise() {
   initialiseRoutes(app);
+  await connect();
+  app.listen(port);
+  console.log(`Uniswap explorer backend server started`);
 }
 
 initialise();
