@@ -9,9 +9,10 @@ const getNonce = async (req, res) => {
 
 const verify = async (req, res) => {
   const { signature, nonce } = req.body;
-  const isVerified = await authService.verifyNonce(signature, nonce);
-  if (isVerified) {
-    res.send(ok());
+  const result = await authService.verifyNonce(signature, nonce);
+  if (result.status) {
+    const authToken = authService.generateAuthToken(result.message);
+    res.send(ok(authToken));
   } else {
     res.send(error("Unable to authenticate user"));
   }
