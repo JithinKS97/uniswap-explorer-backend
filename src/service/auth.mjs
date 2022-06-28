@@ -1,5 +1,5 @@
 const getNonce = (address) => {
-  return `address + nonce`;
+  return `${address} + nonce`;
 };
 
 export default {
