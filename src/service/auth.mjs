@@ -1,8 +1,9 @@
 import userService from "./user.mjs";
 import crypto from "crypto";
 import { User } from "../models/user.mjs";
+import { ethers } from "ethers";
 
-const getNonce = async (address) => {
+const generateNonce = async (address) => {
   const user = await userService.findUserByAddress(address);
   if (!user) {
     await userService.createUser(address);
@@ -13,19 +14,33 @@ const getNonce = async (address) => {
 
 const addNonceToUser = async (user) => {
   const nonce = crypto.randomBytes(8).toString("base64url");
-  await User.updateOne(
-    {
-      address: user.address,
+  await user.updateOne({
+    $set: {
+      nonce,
     },
-    {
-      $set: {
-        nonce: nonce,
-      },
-    }
-  );
+  });
   return nonce;
 };
 
+const verifyNonce = async (signature, nonceInRequest) => {
+  try {
+    const message = `Signing this message with nonce:${nonceInRequest}`;
+    const address = ethers.utils.verifyMessage(message, signature);
+    const savedNonce = await getNonceOfUser(address);
+    return savedNonce === nonceInRequest;
+  } catch (err) {
+    console.log(`Unable to verify nonce ${err}`);
+    return false;
+  }
+};
+
+const getNonceOfUser = async (address) => {
+  address = address.toLowerCase();
+  const user = await User.findOne({ address });
+  return user.nonce;
+};
+
 export default {
-  getNonce,
+  generateNonce,
+  verifyNonce,
 };
