@@ -14,6 +14,7 @@ const blockTime = 15;
  * Returns uniswap transactions for last n hours
  * @param {Number} hours
  */
+
 async function getUniswapTransactions(hours) {
   const endBlockNumber = await provider.getBlockNumber();
   const startBlockNumber = endBlockNumber - (hours * 60 * 60) / blockTime;
@@ -22,7 +23,17 @@ async function getUniswapTransactions(hours) {
     startBlockNumber,
     endBlockNumber
   );
-  return transactions;
+  return transactions.map(extractRelevantDetails);
+}
+
+function extractRelevantDetails(transaction) {
+  const extractedValue = {
+    hash: transaction.hash,
+    from: transaction.from,
+    timestamp: transaction.timestamp,
+    value: ethers.utils.formatEther(transaction.value),
+  };
+  return extractedValue;
 }
 
 export default {
