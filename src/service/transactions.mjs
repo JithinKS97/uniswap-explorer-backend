@@ -22,7 +22,7 @@ async function getUniswapTransactions(hours) {
     startBlockNumber,
     endBlockNumber
   );
-  return transactions.map(extractRelevantDetails);
+  return transactions.map(extractRelevantDetails).reverse();
 }
 
 function extractRelevantDetails(transaction) {
@@ -31,6 +31,7 @@ function extractRelevantDetails(transaction) {
     from: transaction.from,
     timestamp: transaction.timestamp,
     value: ethers.utils.formatEther(transaction.value),
+    blockNo: transaction.blockNumber,
   };
   return extractedValue;
 }
