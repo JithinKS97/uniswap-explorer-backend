@@ -11,7 +11,7 @@ const verify = async (req, res) => {
   const { signature, nonce } = req.body;
   const result = await authService.verifyNonce(signature, nonce);
   if (result.status) {
-    const authToken = authService.generateAuthToken(result.message);
+    const authToken = await authService.generateAuthToken(result.message);
     res.send(ok(authToken));
   } else {
     res.send(error("Unable to authenticate user"));

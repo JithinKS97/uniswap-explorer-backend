@@ -47,13 +47,26 @@ const getNonceOfUser = async (address) => {
   return user.nonce;
 };
 
-const generateAuthToken = (address) => {
+const generateAuthToken = async (address) => {
   const token = jwt.sign({ address }, process.env.ACCESS_TOKEN_SECRET);
   return token;
+};
+
+const verifyAccessToken = (accessToken) => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
+      if (err) {
+        resolve(error("Invalid token"));
+      } else {
+        resolve(ok(data));
+      }
+    });
+  });
 };
 
 export default {
   generateNonce,
   verifyNonce,
   generateAuthToken,
+  verifyAccessToken,
 };
