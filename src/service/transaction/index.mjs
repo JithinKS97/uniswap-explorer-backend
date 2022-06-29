@@ -1,4 +1,4 @@
-import config from "../config/index.mjs";
+import config from "../../config/index.mjs";
 import ethers from "ethers";
 import dotEnv from "dotenv";
 
@@ -22,6 +22,7 @@ async function getUniswapTransactions(hours) {
     startBlockNumber,
     endBlockNumber
   );
+  console.log(transactions);
   return transactions.map(extractRelevantDetails).reverse();
 }
 

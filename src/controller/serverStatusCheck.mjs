@@ -1,4 +1,4 @@
-import serverStatusCheckService from "../service/serverStatusCheck.mjs";
+import serverStatusCheckService from "../service/serverStatusCheck/index.mjs";
 
 const getStatus = (req, res) => {
   const status = serverStatusCheckService.getStatus();

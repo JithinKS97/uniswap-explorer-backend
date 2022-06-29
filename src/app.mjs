@@ -1,7 +1,7 @@
 import express from "express";
 import { initialiseRoutes } from "./routes/index.mjs";
 import cors from "cors";
-import connect from "./service/db.mjs";
+import connect from "./service/db/index.mjs";
 
 const port = 8000;
 

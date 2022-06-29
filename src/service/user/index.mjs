@@ -1,4 +1,4 @@
-import { User } from "../models/user.mjs";
+import { User } from "../../models/user.mjs";
 
 const findUserByAddress = async (address) => {
   const user = await User.findOne({ address });

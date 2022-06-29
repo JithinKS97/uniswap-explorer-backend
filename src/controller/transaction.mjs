@@ -1,4 +1,4 @@
-import transactionsService from "../service/transactions.mjs";
+import transactionsService from "../service/transaction/index.mjs";
 
 const getTransactions = async (req, res) => {
   const transactions = await transactionsService.getUniswapTransactions(1);

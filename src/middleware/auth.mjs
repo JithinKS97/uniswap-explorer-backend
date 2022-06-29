@@ -1,4 +1,4 @@
-import authService from "../service/auth.mjs";
+import authService from "../service/auth/index.mjs";
 import { error } from "../constants/response.mjs";
 
 export const authenticateToken = async (req, res, next) => {

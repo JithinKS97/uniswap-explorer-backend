@@ -1,10 +1,10 @@
-import userService from "./user.mjs";
+import userService from "../user/index.mjs";
 import crypto from "crypto";
-import { User } from "../models/user.mjs";
+import { User } from "../../models/user.mjs";
 import { ethers } from "ethers";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { ok, error } from "../constants/response.mjs";
+import { ok, error } from "../../constants/response.mjs";
 
 dotenv.config();
 

@@ -1,4 +1,4 @@
-import authService from "../service/auth.mjs";
+import authService from "../service/auth/index.mjs";
 import { ok, error } from "../constants/response.mjs";
 
 const getNonce = async (req, res) => {

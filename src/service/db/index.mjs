@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import config from "../config/index.mjs";
+import config from "../../config/index.mjs";
 
 dotenv.config();
 
