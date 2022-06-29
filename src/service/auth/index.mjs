@@ -9,9 +9,9 @@ import { ok, error } from "../../constants/response.mjs";
 dotenv.config();
 
 const generateNonce = async (address) => {
-  const user = await userService.findUserByAddress(address);
+  let user = await userService.findUserByAddress(address);
   if (!user) {
-    await userService.createUser(address);
+    user = await userService.createUser(address);
   }
   const nonce = await addNonceToUser(user);
   return nonce;

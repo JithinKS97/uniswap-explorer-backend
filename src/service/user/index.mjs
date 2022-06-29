@@ -6,9 +6,13 @@ const findUserByAddress = async (address) => {
 };
 
 const createUser = async (address) => {
-  address = address.toLowerCase();
-  const newUser = new User({ address });
-  return await newUser.save();
+  try {
+    address = address.toLowerCase();
+    const newUser = new User({ address });
+    return await newUser.save();
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export default {
