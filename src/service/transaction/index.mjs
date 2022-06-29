@@ -1,6 +1,7 @@
 import config from "../../config/index.mjs";
 import ethers from "ethers";
 import dotEnv from "dotenv";
+import { abi } from "./uniswapContractAbi.mjs";
 
 // Getting the config
 dotEnv.config();
@@ -22,12 +23,14 @@ async function getUniswapTransactions(hours) {
     startBlockNumber,
     endBlockNumber
   );
-  console.log(transactions);
+
   return transactions.map(extractRelevantDetails).reverse();
 }
 
 function extractRelevantDetails(transaction) {
+  const method = extractMethod(transaction);
   const extractedValue = {
+    method,
     hash: transaction.hash,
     from: transaction.from,
     timestamp: transaction.timestamp,
@@ -35,6 +38,15 @@ function extractRelevantDetails(transaction) {
     blockNo: transaction.blockNumber,
   };
   return extractedValue;
+}
+
+function extractMethod(transaction) {
+  const iface = new ethers.utils.Interface(abi);
+  const data = iface.parseTransaction({
+    data: transaction.data,
+    value: transaction.value,
+  });
+  return data.name;
 }
 
 export default {
