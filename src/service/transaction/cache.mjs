@@ -16,6 +16,7 @@ const loadCache = async (hours) => {
     startBlockNo,
     endBlockNo
   );
+  console.log(`Loaded ${transactions.length} transactions to cache`);
   addTransactions(transactions);
 };
 

@@ -19,7 +19,7 @@ const getRelevantTransactionDetails = async (hours) => {
   const startBlockNo = endBlockNo - blocksElapsed;
 
   const transactionsFetched = await getRawTransactions(
-    cacheLastBlockNo,
+    cacheLastBlockNo + 1,
     endBlockNo
   );
 
@@ -27,6 +27,11 @@ const getRelevantTransactionDetails = async (hours) => {
     startBlockNo,
     cacheLastBlockNo
   );
+
+  console.log(`New transactions: ${transactionsFetched.length}`);
+  console.log(`Transactions from cache: ${transactionsInCache.length}`);
+
+  cacheService.addTransactions(transactionsFetched);
 
   const allTransactions = [...transactionsFetched, ...transactionsInCache].sort(
     (a, b) => b.blockNumber - a.blockNumber
