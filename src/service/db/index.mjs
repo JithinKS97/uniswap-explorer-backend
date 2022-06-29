@@ -7,7 +7,7 @@ let mongoUrl;
 if (process.env.ENV === "local") {
   mongoUrl = "mongodb://localhost:27017/uniswap-explorer";
 } else if (process.env.ENV === "prod") {
-  mongoUrl = `mongodb+srv://Jithin:${process.env.MONGO_PASSWORD}@cluster0.p5d7p.mongodb.net/?retryWrites=true&w=majority`;
+  mongoUrl = `mongodb+srv://Jithin:${process.env.MONGO_PASSWORD}@cluster0.p5d7p.mongodb.net/uniswap-explorer?retryWrites=true&w=majority`;
 }
 
 const connect = () => {
