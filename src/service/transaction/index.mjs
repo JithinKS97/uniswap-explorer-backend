@@ -2,6 +2,7 @@ import config from "../../config/index.mjs";
 import ethers from "ethers";
 import dotEnv from "dotenv";
 import { abi } from "./uniswapContractAbi.mjs";
+import cacheService from "./cache.mjs";
 
 // Getting the config
 dotEnv.config();
@@ -11,21 +12,47 @@ const provider = new ethers.providers.EtherscanProvider(
 );
 const blockTime = 15;
 
-/**
- * Returns uniswap transactions for last n hours
- * @param {Number} hours
- */
-async function getUniswapTransactions(hours) {
-  const endBlockNumber = await provider.getBlockNumber();
-  const startBlockNumber = endBlockNumber - (hours * 60 * 60) / blockTime;
-  const transactions = await provider.getHistory(
-    config.uniswapContractAddress,
-    startBlockNumber,
-    endBlockNumber
+const getRelevantTransactionDetails = async (hours) => {
+  const endBlockNo = await getLastBlockNo();
+  const cacheLastBlockNo = cacheService.getLastBlock();
+  const blocksElapsed = getBlocksElapsed(hours);
+  const startBlockNo = endBlockNo - blocksElapsed;
+
+  const transactionsFetched = await getRawTransactions(
+    cacheLastBlockNo,
+    endBlockNo
   );
 
-  return transactions.map(extractRelevantDetails).reverse();
-}
+  const transactionsInCache = cacheService.getTransactions(
+    startBlockNo,
+    cacheLastBlockNo
+  );
+
+  const allTransactions = [...transactionsFetched, ...transactionsInCache].sort(
+    (a, b) => b.blockNumber - a.blockNumber
+  );
+
+  return allTransactions.map(extractRelevantDetails);
+};
+
+const getLastBlockNo = async () => {
+  const lastBlockNo = await provider.getBlockNumber();
+  return lastBlockNo;
+};
+
+const getBlocksElapsed = (hours) => {
+  const blockNo = (hours * 60 * 60) / blockTime;
+  return blockNo;
+};
+
+const getRawTransactions = async (startBlockNo, endBlockNo) => {
+  const transactions = await provider.getHistory(
+    config.uniswapContractAddress,
+    startBlockNo,
+    endBlockNo
+  );
+  return transactions;
+};
 
 function extractRelevantDetails(transaction) {
   const method = extractMethodName(transaction);
@@ -76,5 +103,8 @@ function extractArgs(transaction) {
 }
 
 export default {
-  getUniswapTransactions,
+  getRelevantTransactionDetails,
+  getRawTransactions,
+  getLastBlockNo,
+  getBlocksElapsed,
 };
