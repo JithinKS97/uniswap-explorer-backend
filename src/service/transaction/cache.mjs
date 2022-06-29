@@ -28,13 +28,14 @@ const getLastBlock = () => {
   return maxBlockNo;
 };
 
-const getTransactions = (startBlockNo, endBlockNo) => {
+const getTransactions = (startBlockNo) => {
+  const cacheLastBlockNo = getLastBlock();
   const collectedTransactions = [];
   const transactions = Object.values(globalThis.cachedTransactions);
   for (let transaction of transactions) {
     if (
       transaction.blockNumber >= startBlockNo &&
-      transaction.blockNumber <= endBlockNo
+      transaction.blockNumber <= cacheLastBlockNo
     ) {
       collectedTransactions.push(transaction);
     }

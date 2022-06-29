@@ -14,29 +14,31 @@ const blockTime = 15;
 
 const getRelevantTransactionDetails = async (hours) => {
   const endBlockNo = await getLastBlockNo();
-  const cacheLastBlockNo = cacheService.getLastBlock();
   const blocksElapsed = getBlocksElapsed(hours);
   const startBlockNo = endBlockNo - blocksElapsed;
-
-  const transactionsFetched = await getRawTransactions(
-    cacheLastBlockNo + 1,
-    endBlockNo
-  );
-
-  const transactionsInCache = cacheService.getTransactions(
-    startBlockNo,
-    cacheLastBlockNo
-  );
-
-  console.log(`New transactions: ${transactionsFetched.length}`);
-  console.log(`Transactions from cache: ${transactionsInCache.length}`);
-
-  cacheService.addTransactions(transactionsFetched);
-
-  const allTransactions = [...transactionsFetched, ...transactionsInCache].sort(
+  let allTransactions = [];
+  if (config.useCache) {
+    const transactionsInCache = cacheService.getTransactions(startBlockNo);
+    const cacheLastBlockNo = cacheService.getLastBlock();
+    const transactionsFetched = await getRawTransactions(
+      cacheLastBlockNo + 1,
+      endBlockNo
+    );
+    console.log(
+      `fetched:${transactionsFetched.length}, cache:${transactionsInCache.length}`
+    );
+    cacheService.addTransactions(transactionsFetched);
+    allTransactions = [...transactionsFetched, ...transactionsInCache];
+  } else {
+    const transactionsFetched = await getRawTransactions(
+      startBlockNo,
+      endBlockNo
+    );
+    allTransactions = transactionsFetched;
+  }
+  allTransactions = allTransactions.sort(
     (a, b) => b.blockNumber - a.blockNumber
   );
-
   return allTransactions.map(extractRelevantDetails);
 };
 
