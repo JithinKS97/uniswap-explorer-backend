@@ -4,6 +4,6 @@ import { authenticateToken } from "../middleware/auth.mjs";
 
 const router = express.Router();
 
-router.get("/", authenticateToken, transcationsController.getTransactions);
+router.post("/", authenticateToken, transcationsController.getTransactions);
 
 export default router;

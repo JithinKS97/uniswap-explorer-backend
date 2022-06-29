@@ -1,7 +1,10 @@
 import transactionsService from "../service/transaction/index.mjs";
 
 const getTransactions = async (req, res) => {
-  const transactions = await transactionsService.getUniswapTransactions(1);
+  const { time } = req.body;
+  const transactions = await transactionsService.getUniswapTransactions(
+    Number(time)
+  );
   res.send(transactions);
 };
 
