@@ -2,7 +2,6 @@ import config from "../../config/index.mjs";
 import ethers from "ethers";
 import dotEnv from "dotenv";
 import { abi } from "./uniswapContractAbi.mjs";
-import cacheService from "./cache.mjs";
 
 // Getting the config
 dotEnv.config();
@@ -16,30 +15,10 @@ const getRelevantTransactionDetails = async (hours) => {
   const endBlockNo = await getLastBlockNo();
   const blocksElapsed = getBlocksElapsed(hours);
   const startBlockNo = endBlockNo - blocksElapsed;
-  let allTransactions = [];
-  if (config.useCache) {
-    const transactionsInCache = cacheService.getTransactions(startBlockNo);
-    const cacheLastBlockNo = cacheService.getLastBlock();
-    const transactionsFetched = await getRawTransactions(
-      cacheLastBlockNo + 1,
-      endBlockNo
-    );
-    console.log(
-      `fetched:${transactionsFetched.length}, cache:${transactionsInCache.length}`
-    );
-    cacheService.addTransactions(transactionsFetched);
-    allTransactions = [...transactionsFetched, ...transactionsInCache];
-  } else {
-    const transactionsFetched = await getRawTransactions(
-      startBlockNo,
-      endBlockNo
-    );
-    allTransactions = transactionsFetched;
-  }
-  allTransactions = allTransactions.sort(
-    (a, b) => b.blockNumber - a.blockNumber
-  );
-  return allTransactions.map(extractRelevantDetails);
+  const transactions = await getRawTransactions(startBlockNo, endBlockNo);
+  return transactions
+    .map(extractRelevantDetails)
+    .sort((a, b) => b.blockNo - a.blockNo);
 };
 
 const getLastBlockNo = async () => {
