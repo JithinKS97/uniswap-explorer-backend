@@ -32,8 +32,8 @@ const verifyNonce = async (signature, nonceInRequest) => {
     const message = `Signing this message with nonce:${nonceInRequest}`;
     const address = ethers.utils.verifyMessage(message, signature);
     const savedNonce = await getNonceOfUser(address);
-    await removeNonceOfAddress(address);
     if (savedNonce === nonceInRequest) {
+      await removeNonceOfAddress(address);
       return ok(address);
     }
   } catch (err) {
