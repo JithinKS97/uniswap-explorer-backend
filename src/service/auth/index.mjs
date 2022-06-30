@@ -43,16 +43,21 @@ const verifyNonce = async (signature, nonceInRequest) => {
 };
 
 const removeNonceOfAddress = async (address) => {
-  await User.updateOne(
-    {
-      address,
-    },
-    {
-      $set: {
-        nonce: "",
+  address = address.toLowerCase();
+  try {
+    await User.updateOne(
+      {
+        address,
       },
-    }
-  );
+      {
+        $set: {
+          nonce: "",
+        },
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const getNonceOfUser = async (address) => {
