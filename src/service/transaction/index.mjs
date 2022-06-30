@@ -2,7 +2,6 @@ import config from "../../config/index.mjs";
 import ethers from "ethers";
 import dotEnv from "dotenv";
 import { abi } from "./uniswapContractAbi.mjs";
-import e from "cors";
 
 // Getting the config
 dotEnv.config();
