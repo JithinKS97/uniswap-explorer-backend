@@ -32,6 +32,7 @@ const verifyNonce = async (signature, nonceInRequest) => {
     const message = `Signing this message with nonce:${nonceInRequest}`;
     const address = ethers.utils.verifyMessage(message, signature);
     const savedNonce = await getNonceOfUser(address);
+    await removeNonceOfAddress(address);
     if (savedNonce === nonceInRequest) {
       return ok(address);
     }
@@ -39,6 +40,19 @@ const verifyNonce = async (signature, nonceInRequest) => {
     console.log(`Unable to verify nonce ${err}`);
     return error("Unable to verify nonce");
   }
+};
+
+const removeNonceOfAddress = async (address) => {
+  await User.updateOne(
+    {
+      address,
+    },
+    {
+      $set: {
+        nonce: "",
+      },
+    }
+  );
 };
 
 const getNonceOfUser = async (address) => {

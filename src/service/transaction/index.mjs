@@ -12,7 +12,6 @@ const provider = new ethers.providers.EtherscanProvider(
 const blockTime = 13;
 
 const getRelevantTransactionDetails = async (hours) => {
-  console.log(hours);
   const endBlockNo = await getLastBlockNo();
   const blocksElapsed = getBlocksElapsed(hours);
   const startBlockNo = endBlockNo - blocksElapsed;
