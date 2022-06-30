@@ -5,8 +5,6 @@ import connect from "./service/db/index.mjs";
 import transactionCacheService from "../src/service/transaction/cache.mjs";
 import config from "./config/index.mjs";
 
-const port = 8000;
-
 const app = express();
 
 app.use(cors());
@@ -25,5 +23,14 @@ async function initialise() {
   }
   console.log(`Uniswap explorer backend server started`);
 }
+
+process
+  .on("unhandledRejection", (reason, p) => {
+    console.error(reason, "Unhandled Rejection at Promise", p);
+  })
+  .on("uncaughtException", (err) => {
+    console.error(err, "Uncaught Exception thrown");
+    process.exit(1);
+  });
 
 initialise();
