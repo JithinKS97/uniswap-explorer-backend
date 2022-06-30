@@ -9,9 +9,10 @@ const provider = new ethers.providers.EtherscanProvider(
   config.chain,
   process.env.ETHERSCAN_API_KEY
 );
-const blockTime = 15;
+const blockTime = 13;
 
 const getRelevantTransactionDetails = async (hours) => {
+  console.log(hours);
   const endBlockNo = await getLastBlockNo();
   const blocksElapsed = getBlocksElapsed(hours);
   const startBlockNo = endBlockNo - blocksElapsed;
