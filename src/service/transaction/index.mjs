@@ -2,6 +2,7 @@ import config from "../../config/index.mjs";
 import ethers from "ethers";
 import dotEnv from "dotenv";
 import { abi } from "./uniswapContractAbi.mjs";
+import e from "cors";
 
 // Getting the config
 dotEnv.config();
@@ -70,21 +71,33 @@ const getTransactionData = (transaction) => {
 };
 
 function extractArgs(transaction) {
-  const data = getTransactionData(transaction);
-  let args = data.args.map((arg) => {
+  const txn = getTransactionData(transaction);
+
+  let args = txn.args.map((arg) => {
     if (arg._isBigNumber) {
       return ethers.utils.formatEther(arg);
     } else {
       return arg;
     }
   });
+
   const argNames = abi
-    .find((item) => item.name === data.name)
+    .find((fn) => fn.name === txn.name)
     .inputs.map((input) => input.name);
+
   let inputArgs = {};
+
   for (let i = 0; i < args.length; i++) {
-    inputArgs[argNames[i]] = args[i];
+    if (argNames[i] === "deadline") {
+      const timestamp = Number(args[i]) * 10 ** 21;
+      inputArgs[argNames[i]] = new Date(timestamp).toLocaleString();
+    } else if (argNames[i] !== "path") {
+      inputArgs[argNames[i]] = args[i].toString();
+    } else {
+      inputArgs[argNames[i]] = args[i];
+    }
   }
+
   return inputArgs;
 }
 
