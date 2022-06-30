@@ -3,4 +3,4 @@
 1. Install the npm dependencies
 2. Create the env file and fill the values
 3. Run `npm run start`
-4. The server will run at port 8000 by default
+4. The server will run at port 3001 by default
