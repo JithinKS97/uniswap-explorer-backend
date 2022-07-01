@@ -75,5 +75,4 @@ export default {
   loadTransactionsCache,
   initiateCacheUpdate,
   getTransactionsFromCache,
-  getLastBlockNoInCache,
 };
