@@ -2,9 +2,9 @@ import transactionService from "./index.mjs";
 
 globalThis.cachedTransactions = [];
 
-const loadTransactionsCache = async () => {
+const loadTransactionsCache = async (hours) => {
   const endBlockNo = await transactionService.getLastBlockNo();
-  const elapsedBlockNo = transactionService.getBlocksElapsed(64);
+  const elapsedBlockNo = transactionService.getBlocksElapsed(hours);
   const startBlockNo = endBlockNo - elapsedBlockNo;
   const transactions = await transactionService.getRawTransactions(
     startBlockNo,
@@ -46,11 +46,13 @@ const updateCache = async () => {
 };
 
 const flushCache = (lastBlockNo) => {
-  const elapsedBlockNo = transactionService.getBlocksElapsed(6);
+  const elapsedBlockNo = transactionService.getBlocksElapsed(64);
   const startBlockNo = lastBlockNo - elapsedBlockNo;
-  for (let i = 0; i < globalThis.cachedTransactions; i++) {
+  for (let i = 0; i < globalThis.cachedTransactions.length; i++) {
     if (globalThis.cachedTransactions[i].blockNumber < startBlockNo) {
-      console.log("Flushing cache");
+      console.log(
+        `Flushing cache block number ${globalThis.cachedTransactions[i].blockNumber}`
+      );
       globalThis.cachedTransactions.splice(i, 1);
     }
   }
