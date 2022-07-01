@@ -2,6 +2,7 @@ import config from "../../config/index.mjs";
 import ethers from "ethers";
 import dotEnv from "dotenv";
 import { abi } from "./uniswapContractAbi.mjs";
+import cacheService from "./cache.mjs";
 
 // Getting the config
 dotEnv.config();
@@ -12,10 +13,7 @@ const provider = new ethers.providers.EtherscanProvider(
 const blockTime = 13;
 
 const getRelevantTransactionDetails = async (hours) => {
-  const endBlockNo = await getLastBlockNo();
-  const blocksElapsed = getBlocksElapsed(hours);
-  const startBlockNo = endBlockNo - blocksElapsed;
-  const transactions = await getRawTransactions(startBlockNo, endBlockNo);
+  const transactions = cacheService.getTransactionsFromCache(hours);
   return transactions
     .map(extractRelevantDetails)
     .sort((a, b) => b.blockNo - a.blockNo);

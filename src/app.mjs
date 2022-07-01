@@ -2,6 +2,7 @@ import express from "express";
 import { initialiseRoutes } from "./routes/index.mjs";
 import cors from "cors";
 import connect from "./service/db/index.mjs";
+import cacheService from "./service/transaction/cache.mjs";
 
 const app = express();
 
@@ -16,6 +17,8 @@ async function initialise() {
   initialiseRoutes(app);
   await connect();
   app.listen(PORT, HOST);
+  await cacheService.loadTransactionsCache();
+  cacheService.initiateCacheUpdate(10);
   console.log(`Uniswap explorer backend server started`);
 }
 
