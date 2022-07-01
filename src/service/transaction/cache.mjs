@@ -41,7 +41,19 @@ const updateCache = async () => {
   console.log(
     `cache last block: ${maxBlockNoInCache}, last block:${lastBlockNo}`
   );
+  flushCache(lastBlockNo);
   addTransactionsToCache(transactions);
+};
+
+const flushCache = (lastBlockNo) => {
+  const elapsedBlockNo = transactionService.getBlocksElapsed(6);
+  const startBlockNo = lastBlockNo - elapsedBlockNo;
+  for (let i = 0; i < globalThis.cachedTransactions; i++) {
+    if (globalThis.cachedTransactions[i].blockNumber < startBlockNo) {
+      console.log("Flushing cache");
+      globalThis.cachedTransactions.splice(i, 1);
+    }
+  }
 };
 
 const initiateCacheUpdate = (timeInterval) => {
