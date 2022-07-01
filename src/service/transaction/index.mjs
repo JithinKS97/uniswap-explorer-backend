@@ -10,7 +10,7 @@ const provider = new ethers.providers.EtherscanProvider(
   config.chain,
   process.env.ETHERSCAN_API_KEY
 );
-const blockTime = 13;
+const blockTime = 12.5;
 
 const getRelevantTransactionDetails = async (hours) => {
   const transactions = cacheService.getTransactionsFromCache(hours);
