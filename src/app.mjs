@@ -18,7 +18,7 @@ async function initialise() {
   await connect();
   app.listen(PORT, HOST);
   await cacheService.loadTransactionsCache();
-  cacheService.initiateCacheUpdate(10);
+  cacheService.initiateCacheUpdate(15);
   console.log(`Uniswap explorer backend server started`);
 }
 
