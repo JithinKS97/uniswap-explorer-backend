@@ -15,10 +15,7 @@ const blockTime = 12.5;
 
 const getRelevantTransactionDetails = async (hours) => {
   const transactions = cacheService.getTransactionsFromCache(hours);
-  return transactions
-    .map(extractRelevantDetails)
-    .filter((txn) => txn)
-    .sort((a, b) => b.blockNo - a.blockNo);
+  return transactions.sort((a, b) => b.blockNo - a.blockNo);
 };
 
 const getLastBlockNo = async () => {
@@ -109,4 +106,5 @@ export default {
   getRawTransactions,
   getLastBlockNo,
   getBlocksElapsed,
+  extractRelevantDetails,
 };

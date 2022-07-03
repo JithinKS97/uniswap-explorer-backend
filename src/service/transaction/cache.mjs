@@ -10,8 +10,11 @@ const loadTransactionsCache = async (hours) => {
     startBlockNo,
     endBlockNo
   );
+  const relevantDetails = transactions
+    .map(transactionService.extractRelevantDetails)
+    .filter((txn) => txn);
   globalThis.lastBlockNo = endBlockNo;
-  addTransactionsToCache(transactions);
+  addTransactionsToCache(relevantDetails);
   console.log(
     `loaded ${globalThis.cachedTransactions.length} transactions in cache`
   );
@@ -25,7 +28,7 @@ const addTransactionsToCache = (transactions) => {
 
 const getLastBlockNoInCache = () => {
   const blockNos = globalThis.cachedTransactions.map(
-    (transaction) => transaction.blockNumber
+    (transaction) => transaction.blockNo
   );
   const maxBlockNoInCache = Math.max(...blockNos);
   return maxBlockNoInCache;
@@ -39,20 +42,23 @@ const updateCache = async () => {
     maxBlockNoInCache + 1,
     lastBlockNo
   );
+  const relevantDetails = transactions
+    .map(transactionService.extractRelevantDetails)
+    .filter((txn) => txn);
   console.log(
     `cache last block: ${maxBlockNoInCache}, last block:${lastBlockNo}`
   );
   flushCache(lastBlockNo);
-  addTransactionsToCache(transactions);
+  addTransactionsToCache(relevantDetails);
 };
 
 const flushCache = (lastBlockNo) => {
   const elapsedBlockNo = transactionService.getBlocksElapsed(64);
   const startBlockNo = lastBlockNo - elapsedBlockNo;
   for (let i = 0; i < globalThis.cachedTransactions.length; i++) {
-    if (globalThis.cachedTransactions[i].blockNumber < startBlockNo) {
+    if (globalThis.cachedTransactions[i].blockNo < startBlockNo) {
       console.log(
-        `Flushing cache block number ${globalThis.cachedTransactions[i].blockNumber}`
+        `Flushing cache block number ${globalThis.cachedTransactions[i].blockNo}`
       );
       globalThis.cachedTransactions.splice(i, 1);
     }
@@ -70,8 +76,8 @@ const getTransactionsInTransactionsList = (startBlockNo, endBlockNo) => {
   const collectedTransactions = [];
   for (let transaction of globalThis.cachedTransactions) {
     if (
-      transaction.blockNumber >= startBlockNo &&
-      transaction.blockNumber <= endBlockNo
+      transaction.blockNo >= startBlockNo &&
+      transaction.blockNo <= endBlockNo
     ) {
       collectedTransactions.push(transaction);
     }
