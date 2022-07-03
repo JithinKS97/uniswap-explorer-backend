@@ -3,6 +3,7 @@ import ethers from "ethers";
 import dotEnv from "dotenv";
 import { abi } from "./uniswapContractAbi.mjs";
 import cacheService from "./cache.mjs";
+import { error, ok } from "../../constants/response.mjs";
 
 // Getting the config
 dotEnv.config();
@@ -16,6 +17,7 @@ const getRelevantTransactionDetails = async (hours) => {
   const transactions = cacheService.getTransactionsFromCache(hours);
   return transactions
     .map(extractRelevantDetails)
+    .filter((txn) => txn)
     .sort((a, b) => b.blockNo - a.blockNo);
 };
 
@@ -39,18 +41,22 @@ const getRawTransactions = async (startBlockNo, endBlockNo) => {
 };
 
 function extractRelevantDetails(transaction) {
-  const method = extractMethodName(transaction);
-  const input = extractArgs(transaction);
-  const extractedValue = {
-    method,
-    hash: transaction.hash,
-    from: transaction.from,
-    timestamp: transaction.timestamp,
-    value: ethers.utils.formatEther(transaction.value),
-    blockNo: transaction.blockNumber,
-    input,
-  };
-  return extractedValue;
+  try {
+    const method = extractMethodName(transaction);
+    const input = extractArgs(transaction);
+    const extractedValue = {
+      method,
+      hash: transaction.hash,
+      from: transaction.from,
+      timestamp: transaction.timestamp,
+      value: ethers.utils.formatEther(transaction.value),
+      blockNo: transaction.blockNumber,
+      input,
+    };
+    return extractedValue;
+  } catch (err) {
+    return null;
+  }
 }
 
 function extractMethodName(transaction) {

@@ -10,6 +10,7 @@ const loadTransactionsCache = async (hours) => {
     startBlockNo,
     endBlockNo
   );
+  globalThis.lastBlockNo = endBlockNo;
   addTransactionsToCache(transactions);
   console.log(
     `loaded ${globalThis.cachedTransactions.length} transactions in cache`
