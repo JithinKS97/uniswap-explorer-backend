@@ -49,6 +49,7 @@ function extractRelevantDetails(transaction) {
       value: ethers.utils.formatEther(transaction.value),
       blockNo: transaction.blockNumber,
       input,
+      timestamp: transaction.timestamp,
     };
     return extractedValue;
   } catch (err) {

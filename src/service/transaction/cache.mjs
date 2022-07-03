@@ -72,12 +72,12 @@ const initiateCacheUpdate = (timeInterval) => {
   }, timeInterval * 1000);
 };
 
-const getTransactionsInTransactionsList = (startBlockNo, endBlockNo) => {
+const getTransactionsInTransactionsList = (startTime, endTime) => {
   const collectedTransactions = [];
   for (let transaction of globalThis.cachedTransactions) {
     if (
-      transaction.blockNo >= startBlockNo &&
-      transaction.blockNo <= endBlockNo
+      transaction.timestamp >= startTime &&
+      transaction.timestamp <= endTime
     ) {
       collectedTransactions.push(transaction);
     }
@@ -86,10 +86,9 @@ const getTransactionsInTransactionsList = (startBlockNo, endBlockNo) => {
 };
 
 const getTransactionsFromCache = (hours) => {
-  const lastBlockNo = globalThis.lastBlockNo;
-  const elapsedBlockNo = transactionService.getBlocksElapsed(hours);
-  const startBlockNo = lastBlockNo - elapsedBlockNo;
-  return getTransactionsInTransactionsList(startBlockNo, lastBlockNo);
+  const currentTimeStamp = Date.now() / 1000;
+  const startTimeStamp = (Date.now() - hours * 60 * 60 * 1000) / 1000;
+  return getTransactionsInTransactionsList(startTimeStamp, currentTimeStamp);
 };
 
 export default {
